@@ -11,6 +11,3 @@ This project is an early WIP.
  - [ ] Better documentation
  - [ ] Publish to NPM
 
-
-
-
