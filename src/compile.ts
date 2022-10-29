@@ -13,15 +13,25 @@ type Config = {
   modules?: {
     name: string
   }[]
+  loadConfigFromPackageJson?: undefined
 }
 
-export function compile() {
+type CompileConfig = Config | { loadConfigFromPackageJson: true }
+
+function loadConfigFromPackageJson(): Config {
   const dir = process.cwd()
   const pkgFile = `${dir}/package.json`
   const pkgContents = fs.readFileSync(pkgFile, 'utf8')
   const pkgJson = JSON.parse(pkgContents)
-
   const config = pkgJson.obol as Config
+  return config
+}
+
+export function compile(compileConfig: CompileConfig) {
+  const config: Config =
+    compileConfig.loadConfigFromPackageJson === undefined
+      ? compileConfig
+      : loadConfigFromPackageJson()
 
   const srcDir = config?.srcDir ?? '.'
   const outDir = config?.outDir ?? '.'
