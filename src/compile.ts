@@ -152,20 +152,21 @@ export function compile(compileConfig: CompileConfig) {
 
         ${headerIncludes}
         ${headerContents}
-        `.join('\n')
+        `.join('\n') + '\n'
       fs.mkdirSync(path.dirname(outHeader), { recursive: true })
       fs.writeFileSync(outHeader, hpp, 'utf8')
 
       let bindingContents = generate.binding(module.fileInfo, module)
       let bindingIncludes = generate.headerIncludes(module)
-      let binding = fmtsrc`
+      let binding =
+        fmtsrc`
         // Generated from file "${
           module.fileInfo.srcFileName
         }", do not modify directly!
         #include "./${module.fileInfo.modulePath.at(-1) ?? ''}.hpp"
         ${bindingIncludes}
         ${bindingContents}
-        `.join('\n')
+        `.join('\n') + '\n'
 
       fs.mkdirSync(path.dirname(outBinding), { recursive: true })
       fs.writeFileSync(outBinding, binding, 'utf8')
