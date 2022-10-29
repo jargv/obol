@@ -253,7 +253,6 @@ function generateStructRequireFunction(struct: StructInfo, module: Module) {
       duk_get_prop_literal(ctx, index, "${field.tsName}");
       ${doAssign}
       duk_pop(ctx);
-
       `
   }
 

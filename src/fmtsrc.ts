@@ -29,7 +29,8 @@ export default (
     } else if (Array.isArray(arg)) {
       let indent = templateLines.pop()?.slice(negativeIndent) ?? ''
       finalLines.push(...templateLines.map(l => l.slice(negativeIndent)))
-      finalLines.push(...arg.map(a => indent + a))
+      // add the indent to each line, but not to empty lines
+      finalLines.push(...arg.map(a => (a.length == 0 ? a : indent + a)))
       prevWasString = false
     } else {
       // at the end of the template, there isn't any arg to use and the last

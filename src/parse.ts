@@ -134,7 +134,7 @@ function collectModulesForImportedTypes(
   modulesByName: Map<string, Module>,
 ) {
   let path = node.moduleSpecifier.getText()
-  if (path === '"obol"'){
+  if (path === '"obol"' || path === "'obol'"){
     return
   }
 

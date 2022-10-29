@@ -13,15 +13,25 @@ type Config = {
   modules?: {
     name: string
   }[]
+  loadConfigFromPackageJson?: undefined
 }
 
-export function compile() {
+type CompileConfig = Config | { loadConfigFromPackageJson: true }
+
+function loadConfigFromPackageJson(): Config {
   const dir = process.cwd()
   const pkgFile = `${dir}/package.json`
   const pkgContents = fs.readFileSync(pkgFile, 'utf8')
   const pkgJson = JSON.parse(pkgContents)
-
   const config = pkgJson.obol as Config
+  return config
+}
+
+export function compile(compileConfig: CompileConfig) {
+  const config: Config =
+    compileConfig.loadConfigFromPackageJson === undefined
+      ? compileConfig
+      : loadConfigFromPackageJson()
 
   const srcDir = config?.srcDir ?? '.'
   const outDir = config?.outDir ?? '.'
@@ -142,20 +152,21 @@ export function compile() {
 
         ${headerIncludes}
         ${headerContents}
-        `.join('\n')
+        `.join('\n') + '\n'
       fs.mkdirSync(path.dirname(outHeader), { recursive: true })
       fs.writeFileSync(outHeader, hpp, 'utf8')
 
       let bindingContents = generate.binding(module.fileInfo, module)
       let bindingIncludes = generate.headerIncludes(module)
-      let binding = fmtsrc`
+      let binding =
+        fmtsrc`
         // Generated from file "${
           module.fileInfo.srcFileName
         }", do not modify directly!
         #include "./${module.fileInfo.modulePath.at(-1) ?? ''}.hpp"
         ${bindingIncludes}
         ${bindingContents}
-        `.join('\n')
+        `.join('\n') + '\n'
 
       fs.mkdirSync(path.dirname(outBinding), { recursive: true })
       fs.writeFileSync(outBinding, binding, 'utf8')
