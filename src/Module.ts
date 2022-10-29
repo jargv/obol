@@ -29,7 +29,6 @@ export class Module {
 
   setFileInfo(fi: FileInfo) {
     this.fileInfo = fi
-
     ;[
       ...this.fileInfo.structTypes,
       ...this.fileInfo.interfaceTypes,
@@ -38,7 +37,7 @@ export class Module {
     ].forEach(type => this.typesByName.set(type.name, type))
   }
 
-  addMappings(...mappings: GlobalTypeMapping[]) {
+  addMappings(mappings: GlobalTypeMapping[]) {
     for (let mapping of mappings) {
       this.mappingsByTsType.set(mapping.tsType, mapping)
     }
